@@ -1,52 +1,53 @@
 import { prisma } from "@/lib/db"
 
-export const DEFAULT_PROMPT_ANALYSE_NEW_FILE = `You are an accountant and invoice analysis assistant. Extract following information from the given invoice: 
+export const DEFAULT_PROMPT_ANALYSE_NEW_FILE = `You are a medical recruitment CV analyst. Extract the following information from the given CV/resume of a medical professional:
 
 {fields}
 
-Also try to extract "items": all separate products or items from the invoice
+Also try to extract "items": all separate work experience entries from the CV (each position held)
 
-Where categories are:
-
+Where categories (medical specialties) are:
 {categories}
 
-And projects are:
-
+And projects (candidate source/pipeline) are:
 {projects}
 
 IMPORTANT RULES:
 - Do not include any other text in your response!
 - If you can't find something leave it blank, NEVER make up information
-- Return only one object`
+- Return only one object
+- For dates use YYYY-MM-DD format
+- For salary expectations, extract any mentioned figure or leave blank
+- Extract ALL work experience entries as separate items`
 
 export const DEFAULT_SETTINGS = [
   {
     code: "default_currency",
     name: "Default Currency",
-    description: "Don't change this setting if you already have multi-currency transactions. I won't recalculate them.",
+    description: "Default currency for salary expectations",
     value: "EUR",
   },
   {
     code: "default_category",
-    name: "Default Category",
+    name: "Default Specialty",
     description: "",
-    value: "other",
+    value: "gp",
   },
   {
     code: "default_project",
-    name: "Default Project",
+    name: "Default Source",
     description: "",
-    value: "personal",
+    value: "direct",
   },
   {
     code: "default_type",
     name: "Default Type",
     description: "",
-    value: "expense",
+    value: "candidate",
   },
   {
     code: "prompt_analyse_new_file",
-    name: "Prompt for Analyze Transaction",
+    name: "Prompt for CV Analysis",
     description: "Allowed variables: {fields}, {categories}, {categories.code}, {projects}, {projects.code}",
     value: DEFAULT_PROMPT_ANALYSE_NEW_FILE,
   },
@@ -59,49 +60,32 @@ export const DEFAULT_SETTINGS = [
 ]
 
 export const DEFAULT_CATEGORIES = [
-  {
-    code: "ads",
-    name: "Advertisement",
-    color: "#882727",
-    llm_prompt: "ads, promos, online ads, etc",
-  },
-  {
-    code: "swag",
-    name: "Swag and Goods",
-    color: "#882727",
-    llm_prompt: "swag, stickers, goods, etc",
-  },
-  { code: "donations", name: "Gifts and Donations", color: "#1e6359", llm_prompt: "donations, gifts, charity" },
-  { code: "tools", name: "Equipment and Tools", color: "#c69713", llm_prompt: "equipment, tools" },
-  { code: "events", name: "Events and Conferences", color: "#ff8b32", llm_prompt: "events, conferences" },
-  { code: "food", name: "Food and Drinks", color: "#d40e70", llm_prompt: "food, drinks, business meals" },
-  { code: "insurance", name: "Insurance", color: "#050942", llm_prompt: "insurance, health, life" },
-  { code: "invoice", name: "Invoice", color: "#064e85", llm_prompt: "custom invoice, bill" },
-  { code: "communication", name: "Mobile and Internet", color: "#0e7d86", llm_prompt: "mobile, internet, phone" },
-  { code: "office", name: "Office Supplies", color: "#59b0b9", llm_prompt: "office, supplies, stationery" },
-  { code: "online", name: "Online Services", color: "#8753fb", llm_prompt: "online services, saas, subscriptions" },
-  { code: "rental", name: "Rental", color: "#050942", llm_prompt: "rental, lease" },
-  {
-    code: "education",
-    name: "Education",
-    color: "#ee5d6c",
-    llm_prompt: "education, professional development, trainings",
-  },
-  { code: "salary", name: "Salary", color: "#ce4993", llm_prompt: "salary, wages, etc" },
-  { code: "fees", name: "Fees", color: "#6a0d83", llm_prompt: "fees, charges, penalties, etc" },
-  { code: "travel", name: "Travel Expenses", color: "#fb9062", llm_prompt: "travel, accommodation, etc" },
-  { code: "utility_bills", name: "Utility Bills", color: "#af7e2e", llm_prompt: "bills, electricity, water, etc" },
-  {
-    code: "transport",
-    name: "Transport",
-    color: "#800000",
-    llm_prompt: "transportation costs, fuel, car rental, vignettes, etc",
-  },
-  { code: "software", name: "Software", color: "#2b5a1d", llm_prompt: "software, licenses" },
-  { code: "other", name: "Other", color: "#121216", llm_prompt: "other, miscellaneous," },
+  { code: "gp", name: "General Practitioner", color: "#0e7490", llm_prompt: "general practitioner, GP, family medicine, medicina general" },
+  { code: "cardiology", name: "Cardiology", color: "#e11d48", llm_prompt: "cardiology, cardiologist, heart specialist" },
+  { code: "psychiatry", name: "Psychiatry", color: "#7c3aed", llm_prompt: "psychiatry, psychiatrist, mental health" },
+  { code: "paediatrics", name: "Paediatrics", color: "#059669", llm_prompt: "paediatrics, pediatrics, paediatrician, children" },
+  { code: "surgery", name: "Surgery", color: "#dc2626", llm_prompt: "surgery, surgeon, general surgery" },
+  { code: "anaesthesia", name: "Anaesthesia", color: "#0284c7", llm_prompt: "anaesthesia, anaesthesiology, anaesthetist" },
+  { code: "internal_medicine", name: "Internal Medicine", color: "#d97706", llm_prompt: "internal medicine, internist, physician" },
+  { code: "dermatology", name: "Dermatology", color: "#c026d3", llm_prompt: "dermatology, dermatologist, skin" },
+  { code: "neurology", name: "Neurology", color: "#4f46e5", llm_prompt: "neurology, neurologist, brain, nervous system" },
+  { code: "oncology", name: "Oncology", color: "#be123c", llm_prompt: "oncology, oncologist, cancer" },
+  { code: "radiology", name: "Radiology", color: "#475569", llm_prompt: "radiology, radiologist, imaging" },
+  { code: "emergency", name: "Emergency Medicine", color: "#ea580c", llm_prompt: "emergency medicine, A&E, emergency department" },
+  { code: "obstetrics", name: "Obstetrics & Gynaecology", color: "#db2777", llm_prompt: "obstetrics, gynaecology, OB/GYN" },
+  { code: "ophthalmology", name: "Ophthalmology", color: "#0891b2", llm_prompt: "ophthalmology, ophthalmologist, eye" },
+  { code: "orthopaedics", name: "Orthopaedics", color: "#65a30d", llm_prompt: "orthopaedics, orthopaedic surgeon, bones, joints" },
+  { code: "other", name: "Other Specialty", color: "#121216", llm_prompt: "other medical specialty not listed above" },
 ]
 
-export const DEFAULT_PROJECTS = [{ code: "personal", name: "Personal", llm_prompt: "personal", color: "#1e202b" }]
+export const DEFAULT_PROJECTS = [
+  { code: "direct", name: "Direct Application", llm_prompt: "direct application, applied directly", color: "#1e202b" },
+  { code: "linkedin", name: "LinkedIn", llm_prompt: "sourced from LinkedIn", color: "#0077b5" },
+  { code: "referral", name: "Referral", llm_prompt: "referred by someone, word of mouth", color: "#059669" },
+  { code: "whatsapp", name: "WhatsApp", llm_prompt: "received via WhatsApp", color: "#25d366" },
+  { code: "agency", name: "Other Agency", llm_prompt: "from another recruitment agency", color: "#7c3aed" },
+  { code: "jobboard", name: "Job Board", llm_prompt: "from job board, IrishJobs, Indeed, etc", color: "#d97706" },
+]
 
 export const DEFAULT_CURRENCIES = [
   { code: "USD", name: "$" },
@@ -286,9 +270,9 @@ export const DEFAULT_CURRENCIES = [
 export const DEFAULT_FIELDS = [
   {
     code: "name",
-    name: "Name",
+    name: "Full Name",
     type: "string",
-    llm_prompt: "human readable name, summarize what is bought or paid for in the invoice",
+    llm_prompt: "full name of the medical professional as written in the CV, including title (Dr., Prof., etc.)",
     isVisibleInList: true,
     isVisibleInAnalysis: true,
     isRequired: true,
@@ -296,19 +280,19 @@ export const DEFAULT_FIELDS = [
   },
   {
     code: "description",
-    name: "Description",
+    name: "Summary",
     type: "string",
-    llm_prompt: "description of the transaction",
+    llm_prompt: "brief professional summary or profile statement from the CV, max 2 sentences",
     isVisibleInList: false,
-    isVisibleInAnalysis: false,
+    isVisibleInAnalysis: true,
     isRequired: false,
     isExtra: false,
   },
   {
     code: "merchant",
-    name: "Merchant",
+    name: "Current Employer",
     type: "string",
-    llm_prompt: "merchant name, use the original spelling and language",
+    llm_prompt: "current or most recent employer/hospital/clinic name",
     isVisibleInList: true,
     isVisibleInAnalysis: true,
     isRequired: false,
@@ -316,19 +300,19 @@ export const DEFAULT_FIELDS = [
   },
   {
     code: "issuedAt",
-    name: "Issued At",
+    name: "CV Date",
     type: "string",
-    llm_prompt: "issued at date (YYYY-MM-DD format)",
+    llm_prompt: "date of the CV if mentioned, otherwise use today's date (YYYY-MM-DD format)",
     isVisibleInList: true,
     isVisibleInAnalysis: true,
-    isRequired: true,
+    isRequired: false,
     isExtra: false,
   },
   {
     code: "projectCode",
-    name: "Project",
+    name: "Source",
     type: "string",
-    llm_prompt: "project code, one of: {projects.code}",
+    llm_prompt: "candidate source, one of: {projects.code}",
     isVisibleInList: true,
     isVisibleInAnalysis: true,
     isRequired: false,
@@ -336,17 +320,17 @@ export const DEFAULT_FIELDS = [
   },
   {
     code: "categoryCode",
-    name: "Category",
+    name: "Specialty",
     type: "string",
-    llm_prompt: "category code, one of: {categories.code}",
+    llm_prompt: "primary medical specialty, one of: {categories.code}. Determine from qualifications, training, and work experience.",
     isVisibleInList: true,
     isVisibleInAnalysis: true,
-    isRequired: false,
+    isRequired: true,
     isExtra: false,
   },
   {
     code: "files",
-    name: "Files",
+    name: "CV Files",
     type: "string",
     llm_prompt: "",
     isVisibleInList: true,
@@ -356,27 +340,27 @@ export const DEFAULT_FIELDS = [
   },
   {
     code: "total",
-    name: "Total",
+    name: "Years of Experience",
     type: "number",
-    llm_prompt: "total total of the transaction",
+    llm_prompt: "total years of medical experience, calculate from graduation or first medical position to present",
     isVisibleInList: true,
-    isVisibleInAnalysis: true,
-    isRequired: true,
-    isExtra: false,
-  },
-  {
-    code: "currencyCode",
-    name: "Currency",
-    type: "string",
-    llm_prompt: "currency code, ISO 4217 three letter code like USD, EUR, including crypto codes like BTC, ETH, etc",
-    isVisibleInList: false,
     isVisibleInAnalysis: true,
     isRequired: false,
     isExtra: false,
   },
   {
+    code: "currencyCode",
+    name: "Salary Currency",
+    type: "string",
+    llm_prompt: "currency of salary expectation if mentioned, default EUR",
+    isVisibleInList: false,
+    isVisibleInAnalysis: false,
+    isRequired: false,
+    isExtra: false,
+  },
+  {
     code: "convertedTotal",
-    name: "Converted Total",
+    name: "Salary Expectation",
     type: "number",
     llm_prompt: "",
     isVisibleInList: false,
@@ -386,7 +370,7 @@ export const DEFAULT_FIELDS = [
   },
   {
     code: "convertedCurrencyCode",
-    name: "Converted Currency Code",
+    name: "Converted Currency",
     type: "string",
     llm_prompt: "",
     isVisibleInList: false,
@@ -406,7 +390,7 @@ export const DEFAULT_FIELDS = [
   },
   {
     code: "note",
-    name: "Note",
+    name: "Recruiter Notes",
     type: "string",
     llm_prompt: "",
     isVisibleInList: false,
@@ -415,22 +399,72 @@ export const DEFAULT_FIELDS = [
     isExtra: false,
   },
   {
-    code: "vat_rate",
-    name: "VAT Rate",
-    type: "number",
-    llm_prompt: "VAT rate in percentage 0-100",
-    isVisibleInList: false,
-    isVisibleInAnalysis: false,
+    code: "email",
+    name: "Email",
+    type: "string",
+    llm_prompt: "email address of the candidate",
+    isVisibleInList: true,
+    isVisibleInAnalysis: true,
     isRequired: false,
     isExtra: true,
   },
   {
-    code: "vat",
-    name: "VAT Amount",
-    type: "number",
-    llm_prompt: "total VAT in currency of the invoice",
+    code: "phone",
+    name: "Phone",
+    type: "string",
+    llm_prompt: "phone number of the candidate, include country code if present",
+    isVisibleInList: true,
+    isVisibleInAnalysis: true,
+    isRequired: false,
+    isExtra: true,
+  },
+  {
+    code: "imc_status",
+    name: "IMC Registration",
+    type: "string",
+    llm_prompt: "Irish Medical Council registration number or status if mentioned, or any medical council registration from any country",
+    isVisibleInList: true,
+    isVisibleInAnalysis: true,
+    isRequired: false,
+    isExtra: true,
+  },
+  {
+    code: "languages",
+    name: "Languages",
+    type: "string",
+    llm_prompt: "all languages spoken by the candidate with proficiency level if mentioned, comma separated",
+    isVisibleInList: true,
+    isVisibleInAnalysis: true,
+    isRequired: false,
+    isExtra: true,
+  },
+  {
+    code: "qualifications",
+    name: "Key Qualifications",
+    type: "string",
+    llm_prompt: "main medical qualifications and degrees (e.g., MB BCh, MRCGP, MRCP, FRCS, MD, etc.), comma separated",
+    isVisibleInList: true,
+    isVisibleInAnalysis: true,
+    isRequired: false,
+    isExtra: true,
+  },
+  {
+    code: "visa_status",
+    name: "Visa/Work Permit",
+    type: "string",
+    llm_prompt: "visa status or work permit information if mentioned (e.g., EU Citizen, Stamp 4, Work Permit, etc.)",
     isVisibleInList: false,
-    isVisibleInAnalysis: false,
+    isVisibleInAnalysis: true,
+    isRequired: false,
+    isExtra: true,
+  },
+  {
+    code: "location",
+    name: "Current Location",
+    type: "string",
+    llm_prompt: "current city/country of residence of the candidate",
+    isVisibleInList: false,
+    isVisibleInAnalysis: true,
     isRequired: false,
     isExtra: true,
   },
@@ -438,7 +472,7 @@ export const DEFAULT_FIELDS = [
     code: "text",
     name: "Extracted Text",
     type: "string",
-    llm_prompt: "extract all recognised text from the invoice",
+    llm_prompt: "extract all recognised text from the CV",
     isVisibleInList: false,
     isVisibleInAnalysis: false,
     isRequired: false,
