@@ -1,0 +1,126 @@
+// VaxPath — multi-tenant schema.
+// Every tenant-owned table carries `practiceId`; queries go through `tenantDb()` (lib/tenant-db.ts),
+// which injects the tenant filter automatically.
+// Fields ending in `Enc` hold AES-256-GCM ciphertext produced by lib/crypto.ts — never plaintext.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  ADMIN
+  CLINICIAN
+  RECEPTION
+  PATIENT
+}
+
+enum ConsentPurpose {
+  DATA_PROCESSING
+  SMS_CONTACT
+  EMAIL_CONTACT
+}
+
+model Practice {
+  id            String     @id @default(uuid()) @db.Uuid
+  slug          String     @unique
+  name          String
+  county        String?
+  timezone      String     @default("Europe/Dublin")
+  defaultLocale String     @default("en") @map("default_locale")
+  isDemo        Boolean    @default(false) @map("is_demo")
+  createdAt     DateTime   @default(now()) @map("created_at")
+  updatedAt     DateTime   @updatedAt @map("updated_at")
+  users         User[]
+  patients      Patient[]
+  consents      Consent[]
+  auditLogs     AuditLog[]
+
+  @@map("practices")
+}
+
+model User {
+  id           String    @id @default(uuid()) @db.Uuid
+  practiceId   String    @map("practice_id") @db.Uuid
+  practice     Practice  @relation(fields: [practiceId], references: [id], onDelete: Restrict)
+  email        String    @unique
+  name         String
+  passwordHash String    @map("password_hash")
+  role         Role
+  active       Boolean   @default(true)
+  locale       String?
+  // Set only for role PATIENT: the patient record this login belongs to.
+  patientId    String?   @unique @map("patient_id") @db.Uuid
+  patient      Patient?  @relation(fields: [patientId], references: [id], onDelete: SetNull)
+  lastLoginAt  DateTime? @map("last_login_at")
+  createdAt    DateTime  @default(now()) @map("created_at")
+  updatedAt    DateTime  @updatedAt @map("updated_at")
+  consentsRecorded Consent[] @relation("ConsentRecordedBy")
+
+  @@index([practiceId])
+  @@map("users")
+}
+
+model Patient {
+  id           String    @id @default(uuid()) @db.Uuid
+  practiceId   String    @map("practice_id") @db.Uuid
+  practice     Practice  @relation(fields: [practiceId], references: [id], onDelete: Restrict)
+  // Names and DOB stay in plaintext: needed for search, identity checks and age-based filters.
+  firstName    String    @map("first_name")
+  lastName     String    @map("last_name")
+  dateOfBirth  DateTime  @map("date_of_birth") @db.Date
+  // Encrypted contact / identifier fields.
+  phoneEnc     String?   @map("phone_enc")
+  emailEnc     String?   @map("email_enc")
+  addressEnc   String?   @map("address_enc")
+  gmsNumberEnc String?   @map("gms_number_enc")
+  notesEnc     String?   @map("notes_enc")
+  // GDPR erasure: personal fields are wiped and this is set; the row stays for referential integrity.
+  erasedAt     DateTime? @map("erased_at")
+  createdAt    DateTime  @default(now()) @map("created_at")
+  updatedAt    DateTime  @updatedAt @map("updated_at")
+  user         User?
+  consents     Consent[]
+
+  @@index([practiceId, lastName])
+  @@map("patients")
+}
+
+// Append-only: a withdrawal is a new row with granted = false.
+model Consent {
+  id            String         @id @default(uuid()) @db.Uuid
+  practiceId    String         @map("practice_id") @db.Uuid
+  practice      Practice       @relation(fields: [practiceId], references: [id], onDelete: Restrict)
+  patientId     String         @map("patient_id") @db.Uuid
+  patient       Patient        @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  purpose       ConsentPurpose
+  granted       Boolean
+  policyVersion String         @map("policy_version")
+  recordedById  String?        @map("recorded_by_id") @db.Uuid
+  recordedBy    User?          @relation("ConsentRecordedBy", fields: [recordedById], references: [id], onDelete: SetNull)
+  createdAt     DateTime       @default(now()) @map("created_at")
+
+  @@index([practiceId, patientId, purpose, createdAt])
+  @@map("consents")
+}
+
+// Append-only audit trail. `metadata` must never contain health data or contact details.
+model AuditLog {
+  id         String    @id @default(uuid()) @db.Uuid
+  practiceId String?   @map("practice_id") @db.Uuid
+  practice   Practice? @relation(fields: [practiceId], references: [id], onDelete: Restrict)
+  actorId    String?   @map("actor_id") @db.Uuid
+  actorRole  Role?     @map("actor_role")
+  action     String
+  entityType String?   @map("entity_type")
+  entityId   String?   @map("entity_id")
+  metadata   Json?
+  createdAt  DateTime  @default(now()) @map("created_at")
+
+  @@index([practiceId, createdAt])
+  @@map("audit_logs")
+}

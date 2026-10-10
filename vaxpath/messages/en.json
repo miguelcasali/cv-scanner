@@ -1,0 +1,102 @@
+{
+  "common": {
+    "appName": "VaxPath",
+    "tagline": "Vaccination workflow for GP practices in Ireland",
+    "signIn": "Sign in",
+    "signOut": "Sign out",
+    "language": "Language",
+    "comingSoon": "Coming in phase {phase}",
+    "accessDenied": "You do not have permission to open that page.",
+    "demoBanner": "Demo environment — all people and data shown are fictitious. No real SMS, emails or payments are ever sent.",
+    "notMedicalDevice": "VaxPath is an administrative and workflow tool. It does not recommend vaccines: every clinical decision is made by a healthcare professional."
+  },
+  "roles": {
+    "ADMIN": "Administrator",
+    "CLINICIAN": "Clinician",
+    "RECEPTION": "Reception",
+    "PATIENT": "Patient"
+  },
+  "landing": {
+    "headline": "Vaccination workflow, without the paperwork",
+    "intro": "Travel clinics, specialist referrals, seasonal campaigns and cold-chain records in one place, built for Irish general practice.",
+    "staffLogin": "Practice staff sign in",
+    "patientLogin": "Patient sign in"
+  },
+  "login": {
+    "title": "Sign in to VaxPath",
+    "email": "Email",
+    "password": "Password",
+    "submit": "Sign in",
+    "invalid": "Invalid email or password.",
+    "demoAccounts": "Demo accounts (fictitious, password: {password})"
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "travel": "Travel",
+    "referrals": "Referrals",
+    "campaigns": "Campaigns",
+    "coldChain": "Cold chain",
+    "patients": "Patients",
+    "audit": "Audit log",
+    "users": "Users",
+    "portal": "My record"
+  },
+  "dashboard": {
+    "title": "Practice dashboard",
+    "welcome": "Welcome, {name}",
+    "signedInAs": "Signed in as {role} at {practice}",
+    "patients": "Patients",
+    "staff": "Staff accounts",
+    "auditEvents": "Audit events (24h)"
+  },
+  "patients": {
+    "title": "Patients",
+    "name": "Name",
+    "dob": "Date of birth",
+    "consents": "Consents",
+    "view": "View",
+    "details": "Patient details",
+    "phone": "Phone",
+    "email": "Email",
+    "address": "Address",
+    "gmsNumber": "GMS / medical card number",
+    "notes": "Administrative notes",
+    "sensitiveNotice": "Opening this page is recorded in the audit log.",
+    "erased": "Erased",
+    "back": "Back to patients"
+  },
+  "consent": {
+    "title": "Consents",
+    "DATA_PROCESSING": "Processing of personal data for care administration",
+    "SMS_CONTACT": "Contact by SMS",
+    "EMAIL_CONTACT": "Contact by email",
+    "granted": "Granted",
+    "notGranted": "Not granted",
+    "grant": "Grant",
+    "withdraw": "Withdraw",
+    "policyVersion": "Policy version {version}",
+    "history": "Every change is kept; withdrawing creates a new record."
+  },
+  "audit": {
+    "title": "Audit log",
+    "when": "When",
+    "actor": "Actor",
+    "action": "Action",
+    "entity": "Entity",
+    "empty": "No events yet."
+  },
+  "users": {
+    "title": "Users",
+    "name": "Name",
+    "email": "Email",
+    "role": "Role",
+    "active": "Active",
+    "lastLogin": "Last sign-in",
+    "never": "Never"
+  },
+  "portal": {
+    "title": "My record",
+    "intro": "This is the information your practice holds about you in VaxPath.",
+    "yourConsents": "Your consents"
+  }
+}

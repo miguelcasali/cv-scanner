@@ -1,0 +1,102 @@
+{
+  "common": {
+    "appName": "VaxPath",
+    "tagline": "Flujo de vacunación para consultas de medicina general en Irlanda",
+    "signIn": "Iniciar sesión",
+    "signOut": "Cerrar sesión",
+    "language": "Idioma",
+    "comingSoon": "Disponible en la fase {phase}",
+    "accessDenied": "No tienes permiso para abrir esa página.",
+    "demoBanner": "Entorno de demostración: todas las personas y datos son ficticios. Nunca se envían SMS ni emails reales ni se hacen cobros reales.",
+    "notMedicalDevice": "VaxPath es una herramienta administrativa y de flujo de trabajo. No recomienda vacunas: toda decisión clínica la toma un profesional sanitario."
+  },
+  "roles": {
+    "ADMIN": "Administrador",
+    "CLINICIAN": "Clínico",
+    "RECEPTION": "Recepción",
+    "PATIENT": "Paciente"
+  },
+  "landing": {
+    "headline": "Flujo de vacunación, sin papeleo",
+    "intro": "Consulta del viajero, derivaciones a especialistas, campañas estacionales y registros de cadena de frío en un solo lugar, pensado para la medicina general irlandesa.",
+    "staffLogin": "Acceso del personal de la consulta",
+    "patientLogin": "Acceso de pacientes"
+  },
+  "login": {
+    "title": "Inicia sesión en VaxPath",
+    "email": "Email",
+    "password": "Contraseña",
+    "submit": "Entrar",
+    "invalid": "Email o contraseña incorrectos.",
+    "demoAccounts": "Cuentas de demostración (ficticias, contraseña: {password})"
+  },
+  "nav": {
+    "dashboard": "Panel",
+    "travel": "Viajero",
+    "referrals": "Derivaciones",
+    "campaigns": "Campañas",
+    "coldChain": "Cadena de frío",
+    "patients": "Pacientes",
+    "audit": "Registro de auditoría",
+    "users": "Usuarios",
+    "portal": "Mi ficha"
+  },
+  "dashboard": {
+    "title": "Panel de la consulta",
+    "welcome": "Hola, {name}",
+    "signedInAs": "Sesión iniciada como {role} en {practice}",
+    "patients": "Pacientes",
+    "staff": "Cuentas de personal",
+    "auditEvents": "Eventos de auditoría (24 h)"
+  },
+  "patients": {
+    "title": "Pacientes",
+    "name": "Nombre",
+    "dob": "Fecha de nacimiento",
+    "consents": "Consentimientos",
+    "view": "Ver",
+    "details": "Datos del paciente",
+    "phone": "Teléfono",
+    "email": "Email",
+    "address": "Dirección",
+    "gmsNumber": "Número GMS / tarjeta médica",
+    "notes": "Notas administrativas",
+    "sensitiveNotice": "La apertura de esta página queda registrada en el registro de auditoría.",
+    "erased": "Suprimido",
+    "back": "Volver a pacientes"
+  },
+  "consent": {
+    "title": "Consentimientos",
+    "DATA_PROCESSING": "Tratamiento de datos personales para la gestión asistencial",
+    "SMS_CONTACT": "Contacto por SMS",
+    "EMAIL_CONTACT": "Contacto por email",
+    "granted": "Otorgado",
+    "notGranted": "No otorgado",
+    "grant": "Otorgar",
+    "withdraw": "Retirar",
+    "policyVersion": "Versión de la política {version}",
+    "history": "Se conserva cada cambio; retirar un consentimiento crea un registro nuevo."
+  },
+  "audit": {
+    "title": "Registro de auditoría",
+    "when": "Cuándo",
+    "actor": "Usuario",
+    "action": "Acción",
+    "entity": "Entidad",
+    "empty": "Todavía no hay eventos."
+  },
+  "users": {
+    "title": "Usuarios",
+    "name": "Nombre",
+    "email": "Email",
+    "role": "Rol",
+    "active": "Activo",
+    "lastLogin": "Último acceso",
+    "never": "Nunca"
+  },
+  "portal": {
+    "title": "Mi ficha",
+    "intro": "Esta es la información que tu consulta guarda sobre ti en VaxPath.",
+    "yourConsents": "Tus consentimientos"
+  }
+}
